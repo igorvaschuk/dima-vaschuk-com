@@ -98,21 +98,73 @@
     }
     button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     .touch-only { display: none; }
-    @media (pointer: coarse) {
-      .touch-only { display: inline; }
-      .key-only { display: none; }
+    .touch .touch-only { display: inline; }
+    .touch .key-only { display: none; }
+
+    /* on-screen controls, shown only on touch devices (html.touch) */
+    .stage { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .pad-btn { display: none; }
+    .touch .stage {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas: "game game" "duck jump";
+    }
+    .touch .frame { grid-area: game; }
+    .touch #btn-duck { grid-area: duck; }
+    .touch #btn-jump { grid-area: jump; color: var(--leaf); }
+    .touch .pad-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 240px;
+      height: clamp(84px, 24vw, 140px);
+      font-size: 28px;
+      border-width: 5px;
+      border-radius: 14px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pad-btn span { font-size: 11px; }
+    .pad-btn.down { background: var(--panel-edge); transform: translateY(3px); }
+    @media (orientation: landscape) {
+      .touch .stage {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas: "duck game jump";
+      }
+      .touch .pad-btn { width: clamp(76px, 13vw, 130px); height: clamp(110px, 45dvh, 220px); }
+      .touch .frame { width: min(100%, 1100px, calc((100dvh - 60px) * 16 / 9)); }
+    }
+    @media (orientation: landscape) and (max-height: 520px) {
+      .touch body {
+        gap: 6px;
+        padding: 6px max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left));
+      }
+      .touch h1, .touch footer, .touch .bar > span { display: none; }
     }
     footer { font-size: 16px; color: #6f8a66; }
   </style>
 </head>
 <body>
   <h1>Capybara Rush</h1>
-  <div class="frame">
-    <canvas id="game" width="960" height="540" aria-label="Capybara Rush game"></canvas>
+  <div class="stage">
+    <button id="btn-duck" class="pad-btn" type="button" aria-label="Duck">▼<span>DUCK</span></button>
+    <div class="frame">
+      <canvas id="game" width="960" height="540" aria-label="Capybara Rush game"></canvas>
+    </div>
+    <button id="btn-jump" class="pad-btn" type="button" aria-label="Jump">▲<span>JUMP</span></button>
   </div>
   <div class="bar">
     <span class="key-only"><kbd>Space</kbd>/<kbd>↑</kbd> jump (x2 in air) · <kbd>↓</kbd> duck · <kbd>P</kbd> pause</span>
-    <span class="touch-only">Tap right side to jump · hold left side to duck</span>
+    <span class="touch-only">Tap JUMP twice for a double jump · hold DUCK to duck</span>
     <button id="mute" type="button">Sound: on</button>
   </div>
   <footer>made for Dima · dima.vaschuk.com</footer>
@@ -1035,7 +1087,15 @@
     ctx.globalAlpha = 1;
   }
 
-  const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  const mq = q => !!(window.matchMedia && window.matchMedia(q).matches);
+  let isTouch = false;
+  function enableTouch() {
+    isTouch = true;
+    document.documentElement.classList.add('touch');
+  }
+  if (mq('(pointer: coarse)') || (navigator.maxTouchPoints > 0 && !mq('(hover: hover)'))) enableTouch();
+  // some phone browsers don't report a coarse pointer; switch on the first real touch
+  window.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' && !isTouch) enableTouch(); }, true);
 
   function drawTitle() {
     ctx.fillStyle = 'rgba(16,36,26,0.35)';
@@ -1074,16 +1134,6 @@
     }
   }
 
-  function drawTouchHints() {
-    if (!isTouch || G.state !== 'play' || G.t > 5) return;
-    ctx.globalAlpha = clamp(5 - G.t, 0, 1) * 0.6;
-    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-    ctx.fillRect(0, 0, W / 2 - 1, H);
-    text('HOLD = DUCK', W / 4, H / 2 + 10, 9);
-    text('TAP = JUMP', W * 3 / 4, H / 2 + 10, 9);
-    ctx.globalAlpha = 1;
-  }
-
   function draw() {
     ctx.setTransform(k, 0, 0, k, 0, 0);
     ctx.imageSmoothingEnabled = false;
@@ -1107,10 +1157,7 @@
       ctx.fillRect(0, 0, W, H);
     }
     if (G.state === 'title') drawTitle();
-    else {
-      drawHUD();
-      drawTouchHints();
-    }
+    else drawHUD();
     if (G.state === 'over') drawOver();
     if (G.state === 'paused') {
       ctx.fillStyle = 'rgba(0,0,0,0.45)';
@@ -1156,32 +1203,40 @@
     if (c === 'ArrowDown' || c === 'KeyS') input.duck = false;
   });
 
-  const duckPointers = new Set();
-  canvas.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    const r = canvas.getBoundingClientRect();
-    const leftSide = (e.clientX - r.left) < r.width / 2;
-    if (e.pointerType !== 'mouse' && leftSide && G.state === 'play') {
-      duckPointers.add(e.pointerId);
-      input.duck = true;
-      initAudio();
-    } else {
-      pressJump();
-    }
-  });
-  const releasePointer = e => {
-    if (duckPointers.delete(e.pointerId)) input.duck = duckPointers.size > 0;
-    else input.jumpHeld = false;
-  };
-  canvas.addEventListener('pointerup', releasePointer);
-  canvas.addEventListener('pointercancel', releasePointer);
+  // tapping/clicking the game itself jumps
+  canvas.addEventListener('pointerdown', e => { e.preventDefault(); pressJump(); });
+  canvas.addEventListener('pointerup', () => { input.jumpHeld = false; });
+  canvas.addEventListener('pointercancel', () => { input.jumpHeld = false; });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  // on-screen buttons (touch devices); multi-touch safe, release on any lift/cancel
+  const padButtons = [];
+  function bindPad(btn, down, up) {
+    const active = new Set();
+    const release = () => { active.clear(); btn.classList.remove('down'); up(); };
+    btn.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+      active.add(e.pointerId);
+      btn.classList.add('down');
+      down();
+    });
+    const end = e => { if (active.delete(e.pointerId) && !active.size) release(); };
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => btn.addEventListener(t, end));
+    btn.addEventListener('contextmenu', e => e.preventDefault());
+    padButtons.push(release);
+  }
+  bindPad(document.getElementById('btn-jump'), pressJump, () => { input.jumpHeld = false; });
+  bindPad(document.getElementById('btn-duck'), () => {
+    if (G.state === 'play') { initAudio(); input.duck = true; } else pressJump();
+  }, () => { input.duck = false; });
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && G.state === 'play') G.state = 'paused';
   });
   window.addEventListener('blur', () => {
-    input.duck = false; input.jumpHeld = false; duckPointers.clear();
+    input.duck = false; input.jumpHeld = false;
+    padButtons.forEach(release => release());
     if (G.state === 'play') G.state = 'paused';
   });
 
