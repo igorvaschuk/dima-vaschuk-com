@@ -18,3 +18,7 @@ Firebase CLI is installed globally (`npm i -g firebase-tools`) and needs Node 20
 ```sh
 python3 -m http.server 8000 --directory public
 ```
+
+## Auto-deploy
+
+Every push to `main` deploys via [.github/workflows/firebase-hosting.yml](.github/workflows/firebase-hosting.yml) (keyless, Workload Identity Federation). One-time GCP setup: `bash scripts/setup-github-deploy.sh`.
