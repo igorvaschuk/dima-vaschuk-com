@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dima's Capybara Game — Under Construction</title>
+  <meta name="description" content="A capybara adventure game by Dima. Coming soon!">
+  <meta property="og:title" content="Dima's Capybara Game">
+  <meta property="og:description" content="A capybara adventure is on its way. Coming soon!">
+  <meta property="og:image" content="https://dima.vaschuk.com/assets/lushwood.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦫</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #10241a;
+      --panel: #2a1d12;
+      --panel-edge: #5b3d22;
+      --gold: #f6c544;
+      --leaf: #7bd35a;
+      --text: #f3ecd8;
+      --muted: #b9c9a8;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at top, #1f4a2e 0%, var(--bg) 70%);
+      color: var(--text);
+      font-family: "VT323", ui-monospace, monospace;
+      font-size: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      gap: 22px;
+    }
+    .frame {
+      width: 100%;
+      max-width: 960px;
+      border: 6px solid var(--panel-edge);
+      outline: 4px solid var(--panel);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      position: relative;
+      background: #000;
+    }
+    .frame img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+    .banner {
+      position: absolute;
+      left: 50%; bottom: 7%;
+      transform: translateX(-50%);
+      background: rgba(42, 29, 18, .92);
+      border: 4px solid var(--panel-edge);
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(10px, 2.2vw, 18px);
+      color: var(--gold);
+      text-shadow: 2px 2px 0 #000;
+      white-space: nowrap;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    @keyframes bob { 50% { transform: translate(-50%, -6px); } }
+    h1 {
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(16px, 4vw, 30px);
+      line-height: 1.5;
+      margin: 0;
+      text-align: center;
+      color: var(--leaf);
+      text-shadow: 3px 3px 0 #000;
+    }
+    p { margin: 0; text-align: center; color: var(--muted); max-width: 40ch; }
+    .bar {
+      width: min(420px, 100%);
+      height: 22px;
+      border: 4px solid var(--panel-edge);
+      background: var(--panel);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bar span {
+      display: block; height: 100%; width: 12%;
+      background: repeating-linear-gradient(90deg, var(--gold) 0 14px, #d9a62c 14px 28px);
+      animation: load 6s steps(20) infinite;
+    }
+    @keyframes load { from { width: 4%; } to { width: 38%; } }
+    .label { font-size: 18px; color: var(--muted); margin-top: -12px; }
+    footer { font-size: 18px; color: #6f8a66; }
+    @media (max-width: 640px) {
+      .banner {
+        position: static; transform: none; animation: none;
+        border: 0; border-top: 4px solid var(--panel-edge); border-radius: 0;
+        text-align: center; font-size: 11px; padding: 12px 8px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .banner, .bar span { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <picture>
+      <source srcset="assets/lushwood.webp" type="image/webp">
+      <img src="assets/lushwood.png" width="1024" height="559" alt="Pixel-art forest path with a capybara and friends">
+    </picture>
+    <div class="banner">🚧 UNDER CONSTRUCTION 🚧</div>
+  </div>
+
+  <h1>Dima's Capybara Game</h1>
+  <p>A capybara adventure is on its way. Come back soon!</p>
+  <div class="bar" role="progressbar" aria-label="Building the game"><span></span></div>
+  <div class="label">Loading level 1…</div>
+
+  <footer>dima.vaschuk.com</footer>
+</body>
+</html>
