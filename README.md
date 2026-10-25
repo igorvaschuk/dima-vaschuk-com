@@ -1,6 +1,6 @@
 # dima.vaschuk.com
 
-Dima's capybara game. For now, an "under construction" page.
+Dima's capybara game: **Capybara Rush**, an endless runner in a single `public/index.html` (canvas + WebAudio, no dependencies). Collect oranges that stack on the capybara's head as a shield; jump logs/rocks/croc ponds, duck bees, grab power-ups.
 
 Static site in `public/`, no build step. Deployed to a separate Firebase Hosting site, `dima-vaschuk`, in the `vaschuk-com` Firebase project.
 DNS: CNAME `dima` → `dima-vaschuk.web.app` at GoDaddy.
@@ -11,7 +11,7 @@ DNS: CNAME `dima` → `dima-vaschuk.web.app` at GoDaddy.
 firebase deploy --only hosting --project vaschuk-com
 ```
 
-Firebase CLI needs Node 20+. With an older Node: `npx -p node@22 -p firebase-tools firebase deploy --only hosting --project vaschuk-com`.
+Firebase CLI is installed globally (`npm i -g firebase-tools`) and needs Node 20+ first on PATH. Without it: `npx -p node@22 -p firebase-tools firebase deploy --only hosting --project vaschuk-com`.
 
 ## Local preview
 
