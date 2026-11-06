@@ -60,7 +60,7 @@
       text-align: center;
     }
     .frame {
-      width: min(100%, 440px, calc((100dvh - 190px) * 720 / 1282));
+      width: min(100%, 440px, calc((100dvh - 240px) * 720 / 1282));
       min-width: min(100%, 260px);
       border: 6px solid var(--panel-edge);
       outline: 4px solid var(--panel);
@@ -70,6 +70,17 @@
       background: #000;
     }
     video { display: block; width: 100%; aspect-ratio: 720 / 1282; background: #000; }
+    .belt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 18px;
+      margin-top: -6px;
+    }
+    .belt picture { display: block; width: 64px; flex: none; }
+    .belt img { display: block; width: 100%; height: auto; }
+    .belt b { font-weight: normal; color: var(--gold); }
     p { margin: 0; color: var(--muted); text-align: center; }
     footer { font-size: 16px; color: #6f8a66; }
   </style>
@@ -80,6 +91,13 @@
     <a href="/taekwondo/" aria-current="page">🥋 Taekwondo</a>
   </nav>
   <h1>Dima's Taekwondo</h1>
+  <div class="belt">
+    <picture>
+      <source srcset="bodan-belt.webp" type="image/webp">
+      <img src="bodan-belt.png" width="800" height="328" alt="">
+    </picture>
+    <span><b>Bodan belt 보단</b> · black belt candidate</span>
+  </div>
   <div class="frame">
     <video controls playsinline preload="metadata" poster="poster.jpg">
       <source src="taekwondo.mp4" type="video/mp4">
