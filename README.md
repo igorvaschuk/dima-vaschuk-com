@@ -2,6 +2,8 @@
 
 Dima's capybara game: **Capybara Rush**, an endless runner in a single `public/index.html` (canvas + WebAudio, no dependencies). Collect oranges that stack on the capybara's head as a shield; jump logs/rocks/croc ponds, duck bees, grab power-ups.
 
+Also `public/taekwondo/`: a sub-page with Dima's taekwondo testing video (H.264 MP4 + poster), linked from tabs at the top of both pages.
+
 Static site in `public/`, no build step. Deployed to a separate Firebase Hosting site, `dima-vaschuk`, in the `vaschuk-com` Firebase project.
 DNS: CNAME `dima` → `dima-vaschuk.web.app` at GoDaddy.
 

@@ -148,12 +148,29 @@
         gap: 6px;
         padding: 6px max(10px, env(safe-area-inset-right)) 6px max(10px, env(safe-area-inset-left));
       }
-      .touch h1, .touch footer, .touch .bar > span { display: none; }
+      .touch h1, .touch .tabs, .touch footer, .touch .bar > span { display: none; }
     }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .tabs a {
+      font-family: "Press Start 2P", monospace;
+      font-size: 10px;
+      text-decoration: none;
+      color: var(--muted);
+      background: var(--panel);
+      border: 3px solid var(--panel-edge);
+      border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .tabs a[aria-current="page"] { color: var(--gold); background: var(--panel-edge); }
+    .tabs a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     footer { font-size: 16px; color: #6f8a66; }
   </style>
 </head>
 <body>
+  <nav class="tabs" aria-label="Site">
+    <a href="/" aria-current="page">🦫 Game</a>
+    <a href="/taekwondo/">🥋 Taekwondo</a>
+  </nav>
   <h1>Capybara Rush</h1>
   <div class="stage">
     <button id="btn-duck" class="pad-btn" type="button" aria-label="Duck">▼<span>DUCK</span></button>
